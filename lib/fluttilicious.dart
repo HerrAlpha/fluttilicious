@@ -1,6 +1,7 @@
 library fluttilicious;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class BottomMenuBar extends StatelessWidget {
@@ -13,6 +14,7 @@ class BottomMenuBar extends StatelessWidget {
   final bool multiColor;
   final bool iconText;
   final double iconSize;
+  final bool hoverEffect;
   final RxInt selectedIndex = 0.obs; // Use RxInt for reactive state
   final RxInt hoveredIndex = RxInt(-1); // Added to track the hovered index
 
@@ -25,6 +27,7 @@ class BottomMenuBar extends StatelessWidget {
     this.wantUseDefaultAppBar = false,
     this.iconText = false,
     this.iconSize = 24,
+    this.hoverEffect = false,
   })  : iconColors = List.generate(icons.length, (_) => iconColor),
         multiColor = false,
         super(key: key);
@@ -38,6 +41,7 @@ class BottomMenuBar extends StatelessWidget {
     this.wantUseDefaultAppBar = false,
     this.iconText = false,
     this.iconSize = 24,
+    this.hoverEffect = false,
   })  : iconColor = Colors.transparent,
         multiColor = true,
         super(key: key);
@@ -105,6 +109,13 @@ class BottomMenuBar extends StatelessWidget {
                         (index) {
                           final isHovered = hoveredIndex.value == index;
                           final isSelected = selectedIndex.value == index;
+                          final hoverTrue = isSelected
+                              ? iconColors[index].withOpacity(0.4)
+                              : isHovered
+                                  ? iconColors[index].withOpacity(0.2)
+                                  : Colors.grey.withOpacity(0.2);
+                          final hover =
+                              hoverEffect ? hoverTrue : Colors.transparent;
                           return MouseRegion(
                             onEnter: (_) {
                               hoveredIndex.value = index;
@@ -117,21 +128,18 @@ class BottomMenuBar extends StatelessWidget {
                                 selectedIndex.value = index;
                               },
                               child: Container(
-                                padding: const EdgeInsets.all(10),
+                                width: 75.w,
+                                padding: const EdgeInsets.all(5),
                                 decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
-                                      color: Colors.black.withOpacity(0.2),
-                                    ),
-                                  ],
-                                  color: isSelected
-                                      ? iconColors[index].withOpacity(0.4)
-                                      : isHovered
-                                          ? iconColors[index].withOpacity(0.2)
-                                          : Colors.grey.withOpacity(0.2),
+                                  shape: BoxShape.rectangle,
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     blurRadius: 20,
+                                  //     offset: const Offset(0, 10),
+                                  //     color: Colors.black.withOpacity(0.2),
+                                  //   ),
+                                  // ],
+                                  color: hover,
                                   // borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Column(
@@ -144,7 +152,12 @@ class BottomMenuBar extends StatelessWidget {
                                           ? multiColor
                                               ? iconColors[index]
                                               : iconColor
-                                          : Colors.grey,
+                                          : isHovered
+                                              ? multiColor
+                                                  ? iconColors[index]
+                                                      .withOpacity(0.8)
+                                                  : iconColor.withOpacity(0.8)
+                                              : Colors.grey,
                                     ),
                                     if (iconText)
                                       Text(
@@ -155,7 +168,13 @@ class BottomMenuBar extends StatelessWidget {
                                               ? multiColor
                                                   ? iconColors[index]
                                                   : iconColor
-                                              : Colors.grey,
+                                              : isHovered
+                                                  ? multiColor
+                                                      ? iconColors[index]
+                                                          .withOpacity(0.8)
+                                                      : iconColor
+                                                          .withOpacity(0.8)
+                                                  : Colors.grey,
                                         ),
                                       ),
                                   ],
