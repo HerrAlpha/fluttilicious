@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       // designSize: Size(360, 640),
       builder: (context, child) => GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'HeartFly',
+          title: 'Fluttilicious',
           // getPages: Pages.listPages(),
           // color: Colours.darkmode,
           home: ExamplePage()),
